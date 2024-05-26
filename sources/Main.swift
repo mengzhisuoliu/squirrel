@@ -18,10 +18,10 @@ struct SquirrelApp {
   static let appDir = "/Library/Input Library/Squirrel.app".withCString { dir in
     URL(fileURLWithFileSystemRepresentation: dir, isDirectory: false, relativeTo: nil)
   }
-  
+
   static func main() {
     let rimeAPI: RimeApi_stdbool = rime_get_api_stdbool().pointee
-    
+
     let handled = autoreleasepool {
       let installer = SquirrelInstaller()
       let args = CommandLine.arguments
@@ -67,7 +67,7 @@ struct SquirrelApp {
           return true
         case "--build":
           // Notification
-          SquirrelApplicationDelegate.showMessage(msgText: NSLocalizedString("deploy_update", comment: ""), msgId: "deploy")
+          SquirrelApplicationDelegate.showMessage(msgText: NSLocalizedString("deploy_update", comment: ""))
           // Build all schemas in current directory
           var builderTraits = RimeTraits.rimeStructInit()
           builderTraits.setCString("rime.squirrel-builder", to: \.app_name)
@@ -90,7 +90,7 @@ struct SquirrelApp {
     if handled {
       return
     }
-    
+
     autoreleasepool {
       // find the bundle identifier and then initialize the input method server
       let main = Bundle.main
@@ -102,10 +102,10 @@ struct SquirrelApp {
       let delegate = SquirrelApplicationDelegate()
       app.delegate = delegate
       app.setActivationPolicy(.accessory)
-      
+
       // opencc will be configured with relative dictionary paths
       FileManager.default.changeCurrentDirectoryPath(main.sharedSupportPath!)
-      
+
       if NSApp.squirrelAppDelegate.problematicLaunchDetected() {
         print("Problematic launch detected!")
         let args = ["Problematic launch detected! Squirrel may be suffering a crash due to improper configuration. Revert previous modifications to see if the problem recurs."]
@@ -121,7 +121,7 @@ struct SquirrelApp {
         NSApp.squirrelAppDelegate.loadSettings()
         print("Squirrel reporting!")
       }
-      
+
       // finally run everything
       app.run()
       print("Squirrel is quitting...")
@@ -129,7 +129,7 @@ struct SquirrelApp {
     }
     return
   }
-  
+
   static let helpDoc = """
 Supported arguments:
 Perform actions:
