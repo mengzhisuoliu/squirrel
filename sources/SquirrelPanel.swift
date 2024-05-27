@@ -64,6 +64,7 @@ final class SquirrelPanel: NSPanel {
     view.currentTheme.inlineCandidate
   }
 
+  // swiftlint:disable:next cyclomatic_complexity
   override func sendEvent(_ event: NSEvent) {
     switch event.type {
     case .leftMouseDown:
@@ -98,7 +99,7 @@ final class SquirrelPanel: NSPanel {
     case .scrollWheel:
       if event.phase == .began {
         scrollDirection = .zero
-      // Scrollboard span
+        // Scrollboard span
       } else if event.phase == .ended || (event.phase == .init(rawValue: 0) && event.momentumPhase != .init(rawValue: 0)) {
         if abs(scrollDirection.dx) > abs(scrollDirection.dy) && abs(scrollDirection.dx) > 10 {
           _ = inputController?.page(up: (scrollDirection.dx < 0) == vertical)
@@ -106,7 +107,7 @@ final class SquirrelPanel: NSPanel {
           _ = inputController?.page(up: scrollDirection.dx > 0)
         }
         scrollDirection = .zero
-      // Mouse scroll wheel
+        // Mouse scroll wheel
       } else if event.phase == .init(rawValue: 0) && event.momentumPhase == .init(rawValue: 0) {
         if scrollTime.timeIntervalSinceNow < -1 {
           scrollDirection = .zero
@@ -139,6 +140,7 @@ final class SquirrelPanel: NSPanel {
   }
 
   // Main function to add attributes to text output from librime
+  // swiftlint:disable:next cyclomatic_complexity function_parameter_count
   func update(preedit: String, selRange: NSRange, caretPos: Int, candidates: [String], comments: [String], labels: [String], highlighted index: Int, update: Bool) {
     if update {
       self.preedit = preedit
@@ -335,6 +337,7 @@ private extension SquirrelPanel {
 
   // Get the window size, the windows will be the dirtyRect in
   // SquirrelView.drawRect
+  // swiftlint:disable:next cyclomatic_complexity
   func show() {
     currentScreen()
     let theme = view.currentTheme
@@ -437,7 +440,8 @@ private extension SquirrelPanel {
     text.addAttribute(.paragraphStyle, value: theme.paragraphStyle, range: NSRange(location: 0, length: text.length))
     view.textContentStorage.attributedString = text
     view.textView.setLayoutOrientation(vertical ? .vertical : .horizontal)
-    view.drawView(candidateRanges: [NSRange(location: 0, length: text.length)], hilightedIndex: -1, preeditRange: NSRange(location: NSNotFound, length: 0), highlightedPreeditRange: NSRange(location: NSNotFound, length: 0))
+    view.drawView(candidateRanges: [NSRange(location: 0, length: text.length)], hilightedIndex: -1,
+                  preeditRange: NSRange(location: NSNotFound, length: 0), highlightedPreeditRange: NSRange(location: NSNotFound, length: 0))
     show()
 
     statusTimer?.invalidate()

@@ -58,6 +58,7 @@ final class SquirrelApplicationDelegate: NSObject, NSApplicationDelegate, SPUSta
   }
 
   func applicationWillTerminate(_ notification: Notification) {
+    // swiftlint:disable:next notification_center_detachment
     NotificationCenter.default.removeObserver(self)
     DistributedNotificationCenter.default().removeObserver(self)
     panel?.hide()
@@ -132,8 +133,10 @@ final class SquirrelApplicationDelegate: NSObject, NSApplicationDelegate, SPUSta
         print("Error creating user data directory: \(userDataDir.path())")
       }
     }
+    // swiftlint:disable identifier_name
     let notification_handler: @convention(c) (UnsafeMutableRawPointer?, RimeSessionId, UnsafePointer<CChar>?, UnsafePointer<CChar>?) -> Void = notificationHandler
     let context_object = Unmanaged.passUnretained(self).toOpaque()
+    // swiftlint:enable identifier_name
     rimeAPI.set_notification_handler(notification_handler, context_object)
 
     var squirrelTraits = RimeTraits.rimeStructInit()

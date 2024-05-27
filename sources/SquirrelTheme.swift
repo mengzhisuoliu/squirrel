@@ -294,12 +294,12 @@ private extension SquirrelTheme {
   func blendColor(foregroundColor: NSColor, backgroundColor: NSColor?) -> NSColor {
     let foregroundColor = foregroundColor.usingColorSpace(NSColorSpace.deviceRGB)!
     let backgroundColor = (backgroundColor ?? NSColor.gray).usingColorSpace(NSColorSpace.deviceRGB)!
-    func blend(_ a: CGFloat, _ b: CGFloat) -> CGFloat {
-      return (a * 2 + b) / 3
+    func blend(foreground: CGFloat, background: CGFloat) -> CGFloat {
+      return (foreground * 2 + background) / 3
     }
-    return NSColor(deviceRed: blend(foregroundColor.redComponent, backgroundColor.redComponent),
-                   green: blend(foregroundColor.greenComponent, backgroundColor.greenComponent),
-                   blue: blend(foregroundColor.blueComponent, backgroundColor.blueComponent),
-                   alpha: blend(foregroundColor.alphaComponent, backgroundColor.alphaComponent))
+    return NSColor(deviceRed: blend(foreground: foregroundColor.redComponent, background: backgroundColor.redComponent),
+                   green: blend(foreground: foregroundColor.greenComponent, background: backgroundColor.greenComponent),
+                   blue: blend(foreground: foregroundColor.blueComponent, background: backgroundColor.blueComponent),
+                   alpha: blend(foreground: foregroundColor.alphaComponent, background: backgroundColor.alphaComponent))
   }
 }

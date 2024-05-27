@@ -10,7 +10,8 @@ import AppKit
 private class SquirrelLayoutDelegate: NSObject, NSTextLayoutManagerDelegate {
   func textLayoutManager(_ textLayoutManager: NSTextLayoutManager, shouldBreakLineBefore location: any NSTextLocation, hyphenating: Bool) -> Bool {
     let index = textLayoutManager.offset(from: textLayoutManager.documentRange.location, to: location)
-    if let attributes = textLayoutManager.textContainer?.textView?.textContentStorage?.attributedString?.attributes(at: index, effectiveRange: nil), let noBreak = attributes[.noBreak] as? Bool, noBreak {
+    if let attributes = textLayoutManager.textContainer?.textView?.textContentStorage?.attributedString?.attributes(at: index, effectiveRange: nil),
+       let noBreak = attributes[.noBreak] as? Bool, noBreak {
       return false
     }
     return true
@@ -83,6 +84,7 @@ final class SquirrelView: NSView {
     if preeditRange.length > 0 {
       ranges.append(preeditRange)
     }
+    // swiftlint:disable:next identifier_name
     var x0 = CGFloat.infinity, x1 = -CGFloat.infinity, y0 = CGFloat.infinity, y1 = -CGFloat.infinity
     for range in ranges {
       if let textRange = convert(range: range) {
@@ -97,6 +99,7 @@ final class SquirrelView: NSView {
   }
   // Get the rectangle containing the range of text, will first convert to glyph range, expensive to calculate
   func contentRect(range: NSTextRange) -> NSRect {
+    // swiftlint:disable:next identifier_name
     var x0 = CGFloat.infinity, x1 = -CGFloat.infinity, y0 = CGFloat.infinity, y1 = -CGFloat.infinity
     textLayoutManager.enumerateTextSegments(in: range, type: .standard, options: .rangeNotRequired) { _, rect, _, _ in
       x0 = min(rect.minX, x0)
@@ -118,6 +121,7 @@ final class SquirrelView: NSView {
   }
 
   // All draws happen here
+  // swiftlint:disable:next cyclomatic_complexity
   override func draw(_ dirtyRect: NSRect) {
     var backgroundPath: CGPath?
     var preeditPath: CGPath?
@@ -158,7 +162,8 @@ final class SquirrelView: NSView {
       } else {
         // Draw other highlighted Rect
         if candidate.length > 0 && theme.candidateBackColor != nil {
-          let candidatePath = drawPath(highlightedRange: candidate, backgroundRect: backgroundRect, preeditRect: preeditRect, containingRect: containingRect, extraExpansion: theme.surroundingExtraExpansion)
+          let candidatePath = drawPath(highlightedRange: candidate, backgroundRect: backgroundRect, preeditRect: preeditRect,
+                                       containingRect: containingRect, extraExpansion: theme.surroundingExtraExpansion)
           if candidatePaths == nil {
             candidatePaths = CGMutablePath()
           }
@@ -413,6 +418,7 @@ private extension SquirrelView {
     } else if lineRects.count > 2 {
       leadingRect = lineRects[0]
       trailingRect = lineRects[lineRects.count-1]
+      // swiftlint:disable:next identifier_name
       var x0 = CGFloat.infinity, x1 = -CGFloat.infinity, y0 = CGFloat.infinity, y1 = -CGFloat.infinity
       for i in 1..<(lineRects.count-1) {
         let rect = lineRects[i]

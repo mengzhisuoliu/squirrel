@@ -130,7 +130,7 @@ final class SquirrelConfig {
 
   // isVertical
   func updateTextOrientation(prefix: String) -> Bool {
-  let textOrientation = getString("\(prefix)/text_orientation")
+    let textOrientation = getString("\(prefix)/text_orientation")
     switch textOrientation {
     case "horizontal":
       return false

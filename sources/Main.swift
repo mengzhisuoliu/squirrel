@@ -10,8 +10,8 @@ import InputMethodKit
 
 @main
 struct SquirrelApp {
-  static let userDir = if let pw = getpwuid(getuid()) {
-    URL(fileURLWithFileSystemRepresentation: pw.pointee.pw_dir, isDirectory: true, relativeTo: nil).appending(components: "Library", "Rime")
+  static let userDir = if let pwuid = getpwuid(getuid()) {
+    URL(fileURLWithFileSystemRepresentation: pwuid.pointee.pw_dir, isDirectory: true, relativeTo: nil).appending(components: "Library", "Rime")
   } else {
     try! FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("Rime", isDirectory: true)
   }
@@ -19,6 +19,7 @@ struct SquirrelApp {
     URL(fileURLWithFileSystemRepresentation: dir, isDirectory: false, relativeTo: nil)
   }
 
+  // swiftlint:disable:next cyclomatic_complexity
   static func main() {
     let rimeAPI: RimeApi_stdbool = rime_get_api_stdbool().pointee
 

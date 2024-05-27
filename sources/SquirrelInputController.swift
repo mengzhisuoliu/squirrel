@@ -28,6 +28,7 @@ final class SquirrelInputController: IMKInputController {
   private var chordDuration: TimeInterval = 0
   private var currentApp: String = ""
 
+  // swiftlint:disable:next cyclomatic_complexity
   override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
     let modifiers = event.modifierFlags
     let changes = lastModifiers.symmetricDifference(modifiers)
@@ -128,6 +129,7 @@ final class SquirrelInputController: IMKInputController {
     return success
   }
 
+  // swiftlint:disable:next identifier_name
   func page(up: Bool) -> Bool {
     var handled = false
     handled = rimeAPI.change_page(session, up)
@@ -282,7 +284,8 @@ private extension SquirrelInputController {
     if chordKeyCount > 0 && session != 0 {
       // simulate key-ups
       for i in 0..<chordKeyCount {
-        if rimeAPI.process_key(session, Int32(chordKeyCodes[i]), Int32(chordModifiers[i] | kReleaseMask.rawValue)) {
+        let handled = rimeAPI.process_key(session, Int32(chordKeyCodes[i]), Int32(chordModifiers[i] | kReleaseMask.rawValue))
+        if handled {
           processedKeys = true
         }
       }
@@ -413,6 +416,7 @@ private extension SquirrelInputController {
     }
   }
 
+  // swiftlint:disable:next cyclomatic_complexity
   func rimeUpdate() {
     // print("[DEBUG] rimeUpdate")
     rimeConsumeCommittedText()
@@ -420,6 +424,7 @@ private extension SquirrelInputController {
     var status = RimeStatus_stdbool.rimeStructInit()
     if rimeAPI.get_status(session, &status) {
       // enable schema specific ui style
+      // swiftlint:disable:next identifier_name
       if let schema_id = status.schema_id, schemaId == "" || schemaId != String(cString: schema_id) {
         schemaId = String(cString: schema_id)
         NSApp.squirrelAppDelegate.loadSettings(for: schemaId)
@@ -484,15 +489,20 @@ private extension SquirrelInputController {
         comments.append(candidate.comment.map { String(cString: $0) } ?? "")
       }
       var labels = [String]()
+      // swiftlint:disable identifier_name
       if let select_keys = ctx.menu.select_keys {
-        labels = Array(arrayLiteral: String(cString: select_keys))
+        labels = String(cString: select_keys).map { String($0) }
       } else if let select_labels = ctx.select_labels {
         let pageSize = Int(ctx.menu.page_size)
         for i in 0..<pageSize {
           labels.append(select_labels[i].map { String(cString: $0) } ?? "")
         }
       }
-      showPanel(preedit: inlinePreedit ? "" : preedit, selRange: NSRange(location: start.utf16Offset(in: preedit), length: preedit.utf16.distance(from: start, to: end)), caretPos: caretPos.utf16Offset(in: preedit), candidates: candidates, comments: comments, labels: labels, highlighted: Int(ctx.menu.highlighted_candidate_index))
+      // swiftlint:enable identifier_name
+
+      let selRange = NSRange(location: start.utf16Offset(in: preedit), length: preedit.utf16.distance(from: start, to: end))
+      showPanel(preedit: inlinePreedit ? "" : preedit, selRange: selRange, caretPos: caretPos.utf16Offset(in: preedit),
+                candidates: candidates, comments: comments, labels: labels, highlighted: Int(ctx.menu.highlighted_candidate_index))
       _ = rimeAPI.free_context(&ctx)
     } else {
       hidePalettes()
@@ -531,6 +541,7 @@ private extension SquirrelInputController {
     client.setMarkedText(attrString, selectionRange: NSRange(location: caretPos, length: 0), replacementRange: NSRange(location: NSNotFound, length: 0))
   }
 
+  // swiftlint:disable:next function_parameter_count
   func showPanel(preedit: String, selRange: NSRange, caretPos: Int, candidates: [String], comments: [String], labels: [String], highlighted: Int) {
     // print("[DEBUG] showPanelWithPreedit:...:")
     guard let client = client else { return }
