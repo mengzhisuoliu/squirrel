@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - '*'
-    paths:
-      - 'sources/**'
 jobs:
   build:
     runs-on: macos-14
@@ -31,7 +29,7 @@ jobs:
         run: brew install peripheryapp/periphery/periphery
 
       - name: Check Unused Code
-        run: periphery scan
+        run: periphery scan --skip-build --index-store-path build/Index.noindex/DataStore
 
       - name: Upload Squirrel artifact
         uses: actions/upload-artifact@v4
